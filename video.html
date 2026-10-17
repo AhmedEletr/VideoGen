@@ -1,0 +1,2041 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <title>Egypt Through Ages - Masterclass</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@500;700;800;900&family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #1E2548;
+      --navy-card: #2B3467;
+      --navy-light: #475569;
+      --coral: #EF4444;
+      --yellow: #F59E0B;
+      --mint: #10B981;
+      --blue: #2563EB;
+      --cyan: #06B6D4;
+      --paper: #FFFFFF;
+      --border-color: #E2E8F0;
+      --notebook-line: rgba(203, 213, 225, 0.55);
+      --strip-bg: #EBF3FA;
+      --strip-dots: #A0C4E2;
+      
+      --rad-sm: 8px;
+      --rad-md: 14px;
+      --rad-lg: 20px;
+      --rad-frame: 22px;
+    }
+
+    body {
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: #D9E2EC;
+      background-image: radial-gradient(circle at 50% 10%, #E8EEF5 0%, #C9D6E4 100%);
+      font-family: 'Nunito', sans-serif;
+      color: var(--navy);
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    #presentation-frame {
+      width: 1840px;
+      height: 1000px;
+      background: var(--paper);
+      border-radius: var(--rad-frame);
+      box-shadow: 0 35px 80px rgba(30, 41, 59, 0.2), 0 0 0 2px #CBD5E1;
+      display: flex;
+      flex-direction: row;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .binder-strip {
+      width: 86px;
+      background: var(--strip-bg);
+      border-right: 2px solid #D0E1F0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-around;
+      padding: 30px 0;
+      z-index: 30;
+      position: relative;
+    }
+    .binder-hole {
+      width: 22px;
+      height: 22px;
+      background: #FFFFFF;
+      border-radius: 50%;
+      border: 3.5px solid var(--strip-dots);
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .ruled-canvas {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background-color: #FFFFFF;
+      background-image: repeating-linear-gradient(
+        transparent,
+        transparent 43px,
+        var(--notebook-line) 43px,
+        var(--notebook-line) 44px
+      );
+      padding: 26px 48px 20px 48px;
+      text-align: left;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 25;
+      margin-bottom: 14px;
+    }
+    .topic-pill {
+      background: var(--navy);
+      color: #FFFFFF;
+      font-size: 16px;
+      font-weight: 800;
+      padding: 9px 24px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      letter-spacing: 0.02em;
+      box-shadow: 0 4px 14px rgba(30, 37, 72, 0.18);
+    }
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      background: #38BDF8;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #38BDF8;
+      animation: pulseAnim 2s infinite ease-in-out;
+    }
+    @keyframes pulseAnim {
+      0%, 100% { opacity: 0.6; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    .slide-counter-badge {
+      font-size: 18px;
+      color: var(--navy-light);
+      background: #FFFFFF;
+      border: 2px solid #CBD5E1;
+      padding: 6px 20px;
+      border-radius: var(--rad-md);
+      font-weight: 800;
+      font-family: 'JetBrains Mono', 'Cairo', monospace;
+    }
+    .slide-counter-badge span {
+      color: var(--blue);
+      font-size: 22px;
+    }
+
+    .slides-deck {
+      position: relative;
+      flex: 1;
+      z-index: 10;
+    }
+    
+    .notebook-slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.97) translateY(12px);
+      filter: blur(4px);
+      transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .notebook-slide.active {
+      display: flex !important;
+      opacity: 1 !important;
+      pointer-events: auto;
+      transform: scale(1) translateY(0);
+      filter: blur(0);
+      z-index: 15 !important;
+    }
+
+    .anim-item {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .notebook-slide.active .anim-item {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: var(--d, 0s);
+    }
+
+    .slide-header {
+      margin-bottom: 16px;
+    }
+    .slide-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--blue);
+      background: #EFF6FF;
+      border: 1.5px solid #BFDBFE;
+      padding: 5px 14px;
+      border-radius: var(--rad-sm);
+      margin-bottom: 6px;
+      letter-spacing: 0.03em;
+      font-family: 'JetBrains Mono', 'Cairo', sans-serif;
+    }
+    .slide-heading {
+      font-size: 38px;
+      font-weight: 900;
+      color: var(--navy);
+      line-height: 1.22;
+      letter-spacing: -0.01em;
+    }
+
+    /* Cover Slide */
+    .cover-simple-container {
+      display: flex;
+      height: 100%;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      padding: 10px 10px 10px 20px;
+    }
+    .cover-text-side {
+      flex: 1.15;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      z-index: 2;
+      padding-right: 20px;
+    }
+    .cover-main-title {
+      font-family: 'Fredoka', 'Nunito', sans-serif;
+      font-size: 64px;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1.15;
+    }
+    .cover-sub-title {
+      font-size: 26px;
+      color: #55627A;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .cover-pills-row {
+      display: flex;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .cover-pill-tag {
+      background: #F1F5F9;
+      border: 2px solid #CBD5E1;
+      padding: 10px 22px;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .cover-pill-tag i { color: var(--blue); font-size: 20px; }
+
+    .cover-image-side {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .cover-clean-img {
+      width: 100%;
+      max-width: 740px;
+      height: auto;
+      max-height: 720px;
+      object-fit: contain;
+      display: block;
+      border: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    /* Centered 4-Grid (Slides 2 & 14) */
+    .slide-center-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+      width: 100%;
+    }
+    .four-grid-centered {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      width: 100%;
+      max-width: 1600px;
+      margin: auto 0;
+    }
+    .grid-card-enhanced, .gate-card-enhanced {
+      background: #FFFFFF;
+      border: 2px solid #E2E8F0;
+      border-radius: var(--rad-lg);
+      padding: 26px 28px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 8px 24px rgba(30, 41, 59, 0.05);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    }
+    .grid-card-enhanced:hover, .gate-card-enhanced:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.12);
+    }
+    .card-accent-strip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--blue), var(--mint));
+    }
+    .grid-card-top, .gate-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .grid-num, .phase-code-square-large {
+      font-family: 'JetBrains Mono', 'Cairo', monospace;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--blue);
+    }
+    .phase-code-square-large {
+      background: #EFF6FF;
+      border: 1.5px solid #BFDBFE;
+      padding: 5px 12px;
+      border-radius: var(--rad-sm);
+    }
+    .grid-icon-square, .check-box-square-large {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--rad-md);
+      background: #EFF6FF;
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      border: 1.5px solid #BFDBFE;
+    }
+    .check-box-square-large {
+      width: 36px;
+      height: 36px;
+      background: #ECFDF5;
+      color: var(--mint);
+      border-color: #A7F3D0;
+      font-size: 24px;
+    }
+    .grid-card-title, .gate-title {
+      font-size: 23px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+    .grid-card-desc, .gate-desc {
+      font-size: 16.5px;
+      color: #475569;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+    .grid-metric-badge, .gate-deliverable-tag {
+      margin-top: auto;
+      align-self: flex-start;
+      background: #F8FAFC;
+      color: var(--navy);
+      font-size: 14.5px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', 'Cairo', sans-serif;
+      padding: 8px 16px;
+      border-radius: var(--rad-sm);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1.5px solid #CBD5E1;
+    }
+
+    /* Comparison Table */
+    .table-container-full {
+      background: #FFFFFF;
+      border-radius: var(--rad-lg);
+      border: 2px solid #CBD5E1;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(30, 41, 59, 0.06);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 8px;
+    }
+    .notebook-table-full {
+      width: 100%;
+      height: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .notebook-table-full th {
+      background: var(--navy);
+      color: #FFFFFF;
+      font-size: 18px;
+      font-weight: 800;
+      padding: 18px 24px;
+    }
+    .notebook-table-full td {
+      padding: 20px 24px;
+      font-size: 17px;
+      color: #334155;
+      border-bottom: 1.5px solid #E2E8F0;
+    }
+    .notebook-table-full tbody tr:nth-child(even) { background: #F8FAFC; }
+    .table-category-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      color: var(--navy);
+      font-size: 18px;
+    }
+    .table-category-cell i { color: var(--blue); font-size: 22px; }
+    .table-status-pill {
+      display: inline-block;
+      font-family: 'JetBrains Mono', 'Cairo', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 6px 14px;
+      border-radius: var(--rad-sm);
+    }
+    .status-0 { background: #ECFDF5; color: #059669; border: 1.5px solid #A7F3D0; }
+    .status-1 { background: #EFF6FF; color: #0284C7; border: 1.5px solid #BAE6FD; }
+    .status-2 { background: #FFFBEB; color: #B45309; border: 1.5px solid #FDE68A; }
+    .status-3 { background: #FEF2F2; color: #DC2626; border: 1.5px solid #FECACA; }
+
+    /* Image Cards Tall */
+    .image-cards-row-tall {
+      display: flex;
+      gap: 24px;
+      flex: 1;
+      height: 100%;
+    }
+    .photo-card-tall {
+      flex: 1;
+      background: #FFFFFF;
+      border-radius: var(--rad-lg);
+      border: 2px solid #E2E8F0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 22px rgba(30, 41, 59, 0.06);
+    }
+    .photo-frame-tall {
+      height: 310px;
+      position: relative;
+      background: #0F172A;
+      overflow: hidden;
+    }
+    .photo-frame-tall img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .photo-card-tall:hover .photo-frame-tall img { transform: scale(1.05); }
+    .photo-badge-large {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(15, 23, 42, 0.92);
+      color: #fff;
+      font-family: 'JetBrains Mono', 'Cairo', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 6px 14px;
+      border-radius: var(--rad-sm);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+    .photo-card-body-tall {
+      padding: 22px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+    .photo-card-title-tall { font-size: 24px; font-weight: 800; color: var(--navy); }
+    .photo-card-desc-tall { font-size: 17px; color: #475569; line-height: 1.55; }
+    .photo-tech-specs-tall {
+      margin-top: auto;
+      background: #F8FAFC;
+      border: 1.5px solid #CBD5E1;
+      border-radius: var(--rad-sm);
+      padding: 10px 14px;
+      font-size: 14px;
+      font-family: 'JetBrains Mono', 'Cairo', monospace;
+      font-weight: 700;
+      color: var(--navy);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Direct Charts */
+    .chart-layout-direct {
+      display: flex;
+      gap: 36px;
+      align-items: center;
+      flex: 1;
+      width: 100%;
+    }
+    .direct-chart-img {
+      flex: 1.45;
+      width: 100%;
+      height: 520px;
+      object-fit: contain;
+      border-radius: 20px;
+      border: 2.5px solid #CBD5E1;
+      background: #FFFFFF;
+      box-shadow: 0 12px 30px rgba(30, 41, 59, 0.08);
+      display: block;
+    }
+    .chart-sidebar-expanded {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .sidebar-title-expanded {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar-bullet-expanded {
+      background: #FFFFFF;
+      border: 2px solid #E2E8F0;
+      border-radius: var(--rad-md);
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 16px;
+      color: #334155;
+      line-height: 1.55;
+      box-shadow: 0 4px 12px rgba(30, 41, 59, 0.03);
+    }
+    .sidebar-bullet-expanded strong {
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+    }
+    .sidebar-bullet-expanded strong i { color: var(--mint); font-size: 22px; }
+    .chart-meta-callout-expanded {
+      background: #F8FAFC;
+      border: 2px solid #CBD5E1;
+      border-radius: var(--rad-sm);
+      padding: 12px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Maximized Deep Dive (Slide 6) */
+    .deep-dive-layout-maximized {
+      display: flex;
+      gap: 28px;
+      flex: 1;
+      height: 100%;
+    }
+    .deep-dive-card-max {
+      flex: 1;
+      background: #FFFFFF;
+      border-radius: var(--rad-lg);
+      border: 2.5px solid #CBD5E1;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 10px 24px rgba(30, 41, 59, 0.05);
+      height: 100%;
+    }
+    .primary-card { border-top: 8px solid var(--blue); }
+    .secondary-card { border-top: 8px solid var(--mint); }
+    .dive-header-tall {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .dive-header-tall i { font-size: 30px; color: var(--blue); }
+    .dive-header-tall h3 { font-size: 24px; font-weight: 900; color: var(--navy); }
+    .dive-image-wrap-max {
+      width: 100%;
+      height: 370px;
+      border-radius: var(--rad-md);
+      overflow: hidden;
+      border: 2px solid #CBD5E1;
+      background: #0F172A;
+      margin-bottom: 12px;
+    }
+    .dive-fitted-img { width: 100%; height: 100%; object-fit: cover; }
+    .dive-body-max {
+      font-size: 17.5px;
+      color: #334155;
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+    .dive-pills-row-max {
+      display: flex;
+      gap: 12px;
+      margin-top: auto;
+    }
+    .dive-pills-row-max span {
+      background: #F1F5F9;
+      padding: 8px 16px;
+      border-radius: var(--rad-sm);
+      font-weight: 800;
+      font-size: 14.5px;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1.5px solid #CBD5E1;
+    }
+
+    /* Timeline (Slide 7) */
+    .curved-timeline-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      flex: 1;
+      width: 100%;
+    }
+    .timeline-hybrid-svg {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 140px;
+      transform: translateY(-50%);
+      z-index: 1;
+      pointer-events: none;
+    }
+    .timeline-nodes-row {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      gap: 20px;
+    }
+    .timeline-curved-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+    .timeline-badge-square {
+      width: 58px;
+      height: 58px;
+      background: var(--blue);
+      color: #FFFFFF;
+      font-size: 28px;
+      border-radius: var(--rad-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3.5px solid #FFFFFF;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+      margin-bottom: 16px;
+    }
+    .timeline-card-square {
+      background: #FFFFFF;
+      border: 2px solid #CBD5E1;
+      border-radius: var(--rad-md);
+      padding: 20px;
+      text-align: left;
+      width: 100%;
+      box-shadow: 0 8px 20px rgba(30, 41, 59, 0.05);
+    }
+    .timeline-phase-pill {
+      display: inline-block;
+      font-family: 'JetBrains Mono', 'Cairo', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--blue);
+      background: #EFF6FF;
+      border: 1.5px solid #BFDBFE;
+      padding: 4px 10px;
+      border-radius: var(--rad-sm);
+      margin-bottom: 8px;
+    }
+    .timeline-title { font-size: 20px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+    .timeline-desc { font-size: 15px; color: #64748B; line-height: 1.45; margin-bottom: 10px; }
+    .timeline-meta-box {
+      background: #F8FAFC;
+      border: 1.5px solid #E2E8F0;
+      border-radius: var(--rad-sm);
+      padding: 6px 10px;
+      font-size: 13px;
+      font-family: 'JetBrains Mono', 'Cairo', monospace;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    /* Big Stat (Slide 8) */
+    .stat-hero-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      gap: 18px;
+    }
+    .giant-stat-number {
+      font-size: 120px;
+      font-weight: 900;
+      color: var(--blue);
+      line-height: 1;
+      font-family: 'JetBrains Mono', 'Cairo', monospace;
+    }
+    .giant-stat-label {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-top: 6px;
+    }
+    .stat-hero-desc {
+      font-size: 20px;
+      color: #475569;
+      max-width: 960px;
+      line-height: 1.55;
+    }
+    .stat-points-row { display: flex; gap: 20px; margin-top: 10px; }
+    .stat-pill-card {
+      background: #FFFFFF;
+      border: 2px solid #CBD5E1;
+      border-top: 5px solid var(--blue);
+      border-radius: var(--rad-md);
+      padding: 16px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      font-size: 15.5px;
+      color: #334155;
+      text-align: left;
+      box-shadow: 0 6px 16px rgba(30, 41, 59, 0.05);
+      min-width: 290px;
+    }
+    .stat-pill-card-title {
+      font-weight: 800;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 17px;
+    }
+    .stat-pill-card-title i { color: var(--blue); font-size: 20px; }
+
+    /* Mindmap (Slide 10) */
+    .mindmap-wrapper-relative {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex: 1;
+      width: 100%;
+    }
+    .mindmap-connectors-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .mindmap-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      z-index: 2;
+    }
+    .mindmap-future-card {
+      background: #FFFFFF;
+      border: 2px solid #E2E8F0;
+      border-radius: var(--rad-md);
+      padding: 18px 22px;
+      box-shadow: 0 6px 16px rgba(30, 41, 59, 0.05);
+      position: relative;
+    }
+    .left-branch { border-right: 5px solid var(--blue); }
+    .right-branch { border-left: 5px solid var(--mint); }
+    .branch-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .branch-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--blue);
+    }
+    .branch-card-header i { font-size: 22px; color: var(--navy); }
+    .branch-title { font-size: 19px; font-weight: 800; color: var(--navy); margin-bottom: 6px; }
+    .branch-detail { font-size: 15px; color: #64748B; line-height: 1.4; margin-bottom: 8px; }
+    .branch-submeta {
+      font-family: 'JetBrains Mono', 'Cairo', monospace;
+      font-size: 12.5px;
+      color: #2563EB;
+      background: #EFF6FF;
+      padding: 4px 10px;
+      border-radius: 4px;
+      display: inline-block;
+      font-weight: 700;
+    }
+    .mindmap-center-hub {
+      width: 270px;
+      height: 270px;
+      background: var(--navy);
+      border-radius: var(--rad-lg);
+      border: 5px solid var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.3);
+      z-index: 2;
+    }
+    .hub-core-box {
+      text-align: center;
+      color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 20px;
+    }
+    .hub-core-box i { font-size: 56px; color: var(--yellow); }
+    .hub-title { font-size: 22px; font-weight: 800; }
+    .hub-subtitle {
+      font-family: 'JetBrains Mono', 'Cairo', monospace;
+      font-size: 13px;
+      color: #38BDF8;
+      letter-spacing: 0.05em;
+    }
+
+    /* Case Study (Slide 11) */
+    .case-study-layout-tall {
+      display: flex;
+      gap: 36px;
+      align-items: center;
+      flex: 1;
+    }
+    .case-study-photo-box-tall {
+      flex: 1.15;
+      height: 480px;
+      position: relative;
+      border-radius: var(--rad-lg);
+      overflow: hidden;
+      border: 2px solid #CBD5E1;
+      box-shadow: 0 12px 28px rgba(30, 41, 59, 0.08);
+      background: #0F172A;
+    }
+    .case-study-photo-box-tall img { width: 100%; height: 100%; object-fit: cover; }
+    .case-metric-tag-large {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(10px);
+      color: #FFFFFF;
+      font-size: 16px;
+      font-weight: 800;
+      padding: 8px 18px;
+      border-radius: var(--rad-sm);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'JetBrains Mono', 'Cairo', sans-serif;
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+    }
+    .case-metric-tag-large i { color: var(--mint); }
+    .case-study-content-tall {
+      flex: 1.25;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .case-pill-large {
+      font-family: 'JetBrains Mono', 'Cairo', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--blue);
+      background: #EFF6FF;
+      border: 1.5px solid #BFDBFE;
+      padding: 6px 14px;
+      border-radius: var(--rad-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      align-self: flex-start;
+    }
+    .case-title-large { font-size: 34px; font-weight: 900; color: var(--navy); }
+    .case-text-large { font-size: 17.5px; color: #475569; line-height: 1.6; }
+    .case-stats-grid-large {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 6px;
+    }
+    .stat-mini-card-large {
+      background: #F8FAFC;
+      border: 2px solid #E2E8F0;
+      border-radius: var(--rad-md);
+      padding: 16px 18px;
+      text-align: center;
+    }
+    .mini-val-large {
+      display: block;
+      font-size: 30px;
+      font-weight: 900;
+      font-family: 'JetBrains Mono', 'Cairo', monospace;
+      color: var(--blue);
+    }
+    .mini-lbl-large { font-size: 13px; color: #64748B; font-weight: 800; margin-top: 4px; }
+
+    /* Maximized Tradeoffs Matrix (Slide 13) */
+    .tradeoffs-layout-max {
+      display: flex;
+      gap: 28px;
+      flex: 1;
+      height: 100%;
+    }
+    .tradeoff-card-max {
+      flex: 1;
+      background: #FFFFFF;
+      border-radius: var(--rad-lg);
+      border: 2px solid #CBD5E1;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 8px 20px rgba(30, 41, 59, 0.05);
+      height: 100%;
+    }
+    .tradeoff-title-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .tradeoff-title-bar h3 { font-size: 24px; font-weight: 800; color: var(--navy); }
+    .strengths-card { border-top: 8px solid var(--mint); }
+    .challenges-card { border-top: 8px solid var(--coral); }
+    .strengths-card .tradeoff-title-bar i { font-size: 28px; color: var(--mint); }
+    .challenges-card .tradeoff-title-bar i { font-size: 28px; color: var(--coral); }
+    .tradeoff-img-wrap-max {
+      width: 100%;
+      height: 330px;
+      border-radius: var(--rad-md);
+      overflow: hidden;
+      border: 2px solid #CBD5E1;
+      background: #0F172A;
+      margin-bottom: 12px;
+    }
+    .tradeoff-list-max {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: auto;
+    }
+    .tradeoff-list-max li {
+      font-size: 17px;
+      color: #334155;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.45;
+    }
+    .tradeoff-list-max li i { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+    .strengths-card .tradeoff-list-max li i { color: var(--mint); }
+    .challenges-card .tradeoff-list-max li i { color: var(--coral); }
+
+    /* Quote & Synthesis (Slide 15) */
+    .quote-slide-container-tall {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 24px;
+    }
+    .quote-banner-tall {
+      background: var(--navy);
+      color: #FFFFFF;
+      padding: 38px 56px;
+      border-radius: var(--rad-lg);
+      text-align: center;
+      position: relative;
+      max-width: 1160px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.2);
+      border: 2px solid #334155;
+    }
+    .quote-mark-tall { font-size: 40px; color: var(--yellow); margin-bottom: 6px; }
+    .quote-text-tall { font-size: 30px; line-height: 1.45; font-weight: 700; margin-bottom: 14px; }
+    .quote-author-name-tall { font-size: 21px; font-weight: 800; color: var(--yellow); }
+    .quote-author-role-tall { font-size: 16px; color: #94A3B8; }
+    .summary-points-grid-tall { display: flex; gap: 20px; }
+    .summary-check-card-tall {
+      background: #FFFFFF;
+      border: 2px solid #E2E8F0;
+      border-radius: var(--rad-md);
+      padding: 18px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 16px;
+      color: #475569;
+      box-shadow: 0 6px 16px rgba(30, 41, 59, 0.04);
+      max-width: 550px;
+      line-height: 1.5;
+    }
+    .summary-card-header-tall {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+    .summary-card-header-tall i { color: var(--mint); font-size: 24px; }
+    .callout-pill-tall {
+      background: var(--blue);
+      color: #FFFFFF;
+      font-size: 18px;
+      font-weight: 800;
+      padding: 12px 34px;
+      border-radius: var(--rad-md);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 22px rgba(37, 99, 235, 0.3);
+    }
+
+    /* Bottom Bar */
+    .bottom-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 25;
+      padding-top: 12px;
+      border-top: 2px solid #E2E8F0;
+    }
+    .progress-track {
+      flex: 0.72;
+      height: 10px;
+      background: #E2E8F0;
+      border-radius: var(--rad-sm);
+      overflow: hidden;
+      position: relative;
+    }
+    #slide-progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue), var(--cyan), var(--mint));
+      border-radius: var(--rad-sm);
+      transition: width 0.1s linear;
+    }
+    .astromind-bot-badge-prominent {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #FFFFFF;
+      color: #1E293B;
+      padding: 8px 22px;
+      border-radius: 999px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      border: 2px solid #CBD5E1;
+      font-size: 15px;
+      font-weight: 800;
+    }
+    .astromind-bot-badge-prominent i { font-size: 24px; color: var(--blue); }
+    .astromind-bot-badge-prominent span { color: var(--blue); font-weight: 900; }
+  </style>
+</head>
+<body>
+  <div id="presentation-frame">
+    <div class="binder-strip">
+      <div class="binder-hole"></div>
+      <div class="binder-hole"></div>
+      <div class="binder-hole"></div>
+      <div class="binder-hole"></div>
+      <div class="binder-hole"></div>
+      <div class="binder-hole"></div>
+      <div class="binder-hole"></div>
+      <div class="binder-hole"></div>
+      <div class="binder-hole"></div>
+    </div>
+
+    <div class="ruled-canvas">
+      <div class="top-bar">
+        <div class="topic-pill">
+          <div class="pulse-dot"></div>
+          <span>Egypt Through Ages</span>
+        </div>
+        
+        <div class="top-right-group">
+          <div class="slide-counter-badge">
+            SLIDE <span id="slide-index-view">01</span> / 15
+          </div>
+        </div>
+      </div>
+
+      <div class="slides-deck">
+        
+    <section class="notebook-slide active" id="slide-0" style="display: flex; opacity: 1; z-index: 15;">
+      
+          <div class="cover-simple-container">
+            <div class="cover-text-side">
+              <h1 class="cover-main-title anim-item" style="--d:0.06s">
+                Egypt Through Ages: A Journey Across Millennia
+              </h1>
+              <p class="cover-sub-title anim-item" style="--d:0.12s">
+                From Predynastic Roots to Modern Marvels
+              </p>
+
+              <div class="cover-pills-row anim-item" style="--d:0.18s">
+                <span class="cover-pill-tag"><i class="bx bx-book-open"></i> History</span>
+                <span class="cover-pill-tag"><i class="bx bx-time-five"></i> Culture</span>
+                <span class="cover-pill-tag"><i class="bx bx-user-check"></i> Innovation</span>
+              </div>
+            </div>
+
+            <div class="cover-image-side anim-item" style="--d:0.10s">
+              <img class="cover-clean-img" src="https://i.ibb.co/LTZ9jr7/image.png" alt="Keynote Visual" />
+            </div>
+          </div>
+        
+    </section>
+
+    <section class="notebook-slide " id="slide-1" style="display: none; opacity: 0; z-index: 1;">
+      
+          <div class="slide-header">
+            <span class="slide-tag anim-item" style="--d:0.04s"><i class="bx bx-book-open"></i> MODULE 01</span>
+            <h2 class="slide-heading anim-item" style="--d:0.08s">Foundational Pillars of Egyptian Civilization</h2>
+          </div>
+          <div class="slide-center-container">
+            <div class="four-grid-centered">
+              
+                <div class="grid-card-enhanced anim-item" style="--d:0.12s">
+                  <div class="card-accent-strip"></div>
+                  <div class="grid-card-top">
+                    <span class="grid-num">01</span>
+                    <div class="grid-icon-square"><i class="bx bx-cube"></i></div>
+                  </div>
+                  <h3 class="grid-card-title">Nile River</h3>
+                  <p class="grid-card-desc">Provides fertile floodplains, transportation, and sustenance</p>
+                  <div class="grid-metric-badge">
+                    <i class="bx bx-calendar"></i> Annual Flood Volume: 84 km³
+                  </div>
+                </div>
+              
+                <div class="grid-card-enhanced anim-item" style="--d:0.18s">
+                  <div class="card-accent-strip"></div>
+                  <div class="grid-card-top">
+                    <span class="grid-num">02</span>
+                    <div class="grid-icon-square"><i class="bx bx-chip"></i></div>
+                  </div>
+                  <h3 class="grid-card-title">Divine Cosmology</h3>
+                  <p class="grid-card-desc">Pantheon of gods guides state and daily life</p>
+                  <div class="grid-metric-badge">
+                    <i class="bx bx-calendar"></i> Temple Count: &gt;130
+                  </div>
+                </div>
+              
+                <div class="grid-card-enhanced anim-item" style="--d:0.24s">
+                  <div class="card-accent-strip"></div>
+                  <div class="grid-card-top">
+                    <span class="grid-num">03</span>
+                    <div class="grid-icon-square"><i class="bx bx-layer"></i></div>
+                  </div>
+                  <h3 class="grid-card-title">Pharaonic State</h3>
+                  <p class="grid-card-desc">Divine kingship unites regions under centralized authority</p>
+                  <div class="grid-metric-badge">
+                    <i class="bx bx-calendar"></i> Dynasties: 31
+                  </div>
+                </div>
+              
+                <div class="grid-card-enhanced anim-item" style="--d:0.3s">
+                  <div class="card-accent-strip"></div>
+                  <div class="grid-card-top">
+                    <span class="grid-num">04</span>
+                    <div class="grid-icon-square"><i class="bx bx-robot"></i></div>
+                  </div>
+                  <h3 class="grid-card-title">Architectural Innovation</h3>
+                  <p class="grid-card-desc">Pyramids, obelisks, and engineering marvels define legacy</p>
+                  <div class="grid-metric-badge">
+                    <i class="bx bx-calendar"></i> Pyramid Height Record: 146.6 m
+                  </div>
+                </div>
+              
+            </div>
+          </div>
+        
+    </section>
+
+    <section class="notebook-slide " id="slide-2" style="display: none; opacity: 0; z-index: 1;">
+      
+          <div class="slide-header">
+            <span class="slide-tag anim-item" style="--d:0.04s"><i class="bx bx-table"></i> MODULE 02</span>
+            <h2 class="slide-heading anim-item" style="--d:0.08s">Evolution of Governance, Writing, and Monuments</h2>
+          </div>
+          <div class="table-container-full anim-item" style="--d:0.14s">
+            <table class="notebook-table-full">
+              <thead>
+                <tr>
+                  <th>Era</th><th>Political Structure</th><th>Writing System</th><th>Monumental Architecture</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr class="anim-item" style="--d:0.16s">
+                    <td>
+                      <div class="table-category-cell">
+                        <i class="bx bx-code-alt"></i>
+                        <span>Predynastic</span>
+                      </div>
+                    </td>
+                    <td>Tribal chiefdoms</td>
+                    <td><strong>Proto‑hieroglyphic</strong></td>
+                    <td><span class="table-status-pill status-0">Tombs and early mastabas</span></td>
+                  </tr>
+                
+                  <tr class="anim-item" style="--d:0.2s">
+                    <td>
+                      <div class="table-category-cell">
+                        <i class="bx bx-code-alt"></i>
+                        <span>Old Kingdom</span>
+                      </div>
+                    </td>
+                    <td>Divine monarchy</td>
+                    <td><strong>Hieroglyphic</strong></td>
+                    <td><span class="table-status-pill status-1">Pyramids of Giza</span></td>
+                  </tr>
+                
+                  <tr class="anim-item" style="--d:0.24s">
+                    <td>
+                      <div class="table-category-cell">
+                        <i class="bx bx-code-alt"></i>
+                        <span>Middle Kingdom</span>
+                      </div>
+                    </td>
+                    <td>Centralized bureaucracy</td>
+                    <td><strong>Hieroglyphic + cursive</strong></td>
+                    <td><span class="table-status-pill status-2">Complex mortuary temples</span></td>
+                  </tr>
+                
+                  <tr class="anim-item" style="--d:0.28s">
+                    <td>
+                      <div class="table-category-cell">
+                        <i class="bx bx-code-alt"></i>
+                        <span>New Kingdom</span>
+                      </div>
+                    </td>
+                    <td>Imperial empire</td>
+                    <td><strong>Hieroglyphic + Demotic</strong></td>
+                    <td><span class="table-status-pill status-3">Valley of the Kings</span></td>
+                  </tr>
+                
+                  <tr class="anim-item" style="--d:0.32s">
+                    <td>
+                      <div class="table-category-cell">
+                        <i class="bx bx-code-alt"></i>
+                        <span>Ptolemaic</span>
+                      </div>
+                    </td>
+                    <td>Hellenistic monarchy</td>
+                    <td><strong>Greek + Demotic</strong></td>
+                    <td><span class="table-status-pill status-0">Lighthouse of Alexandria</span></td>
+                  </tr>
+                
+                  <tr class="anim-item" style="--d:0.36s">
+                    <td>
+                      <div class="table-category-cell">
+                        <i class="bx bx-code-alt"></i>
+                        <span>Modern</span>
+                      </div>
+                    </td>
+                    <td>Republican democracy</td>
+                    <td><strong>Arabic script</strong></td>
+                    <td><span class="table-status-pill status-1">Skyscrapers &amp; museums</span></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+          </div>
+        
+    </section>
+
+    <section class="notebook-slide " id="slide-3" style="display: none; opacity: 0; z-index: 1;">
+      
+          <div class="slide-header">
+            <span class="slide-tag anim-item" style="--d:0.04s"><i class="bx bx-images"></i> MODULE 03</span>
+            <h2 class="slide-heading anim-item" style="--d:0.08s">Key Epochs in Egyptian History</h2>
+          </div>
+          <div class="image-cards-row-tall">
+            
+              <div class="photo-card-tall anim-item" style="--d:0.14s">
+                <div class="photo-frame-tall">
+                  <img src="file:///Users/ahmedmohamed/Desktop/Features/.temp/card_image_0.png" alt="Predynastic Foundations" />
+                  <div class="photo-badge-large"><i class="bx bx-history"></i> EPOCH 01</div>
+                </div>
+                <div class="photo-card-body-tall">
+                  <h4 class="photo-card-title-tall">Predynastic Foundations</h4>
+                  <p class="photo-card-desc-tall">Early settlements along the Nile cultivated agriculture, pottery, and nascent symbolic art, laying the groundwork for state formation.</p>
+                  <div class="photo-tech-specs-tall">
+                    <span>Key Site: Badari</span>
+                    <span>Population: ~1 million</span>
+                  </div>
+                </div>
+              </div>
+            
+              <div class="photo-card-tall anim-item" style="--d:0.22000000000000003s">
+                <div class="photo-frame-tall">
+                  <img src="file:///Users/ahmedmohamed/Desktop/Features/.temp/card_image_1.png" alt="Old Kingdom Ascendancy" />
+                  <div class="photo-badge-large"><i class="bx bx-history"></i> EPOCH 02</div>
+                </div>
+                <div class="photo-card-body-tall">
+                  <h4 class="photo-card-title-tall">Old Kingdom Ascendancy</h4>
+                  <p class="photo-card-desc-tall">Era of pyramid building, strong central authority, and the codification of hieroglyphic writing, establishing Egypt&#039;s iconic silhouette.</p>
+                  <div class="photo-tech-specs-tall">
+                    <span>Pyramid Complex: Giza</span>
+                    <span>Pharaoh: Khufu</span>
+                  </div>
+                </div>
+              </div>
+            
+              <div class="photo-card-tall anim-item" style="--d:0.30000000000000004s">
+                <div class="photo-frame-tall">
+                  <img src="file:///Users/ahmedmohamed/Desktop/Features/.temp/card_image_2.png" alt="New Kingdom Expansion" />
+                  <div class="photo-badge-large"><i class="bx bx-history"></i> EPOCH 03</div>
+                </div>
+                <div class="photo-card-body-tall">
+                  <h4 class="photo-card-title-tall">New Kingdom Expansion</h4>
+                  <p class="photo-card-desc-tall">Egypt reaches imperial height, conquering Nubia and the Levant, flourishing in art, trade, and monumental tombs in the Valley of the Kings.</p>
+                  <div class="photo-tech-specs-tall">
+                    <span>Ruler: Ramses II</span>
+                    <span>Territory: Near East</span>
+                  </div>
+                </div>
+              </div>
+            
+          </div>
+        
+    </section>
+
+    <section class="notebook-slide " id="slide-4" style="display: none; opacity: 0; z-index: 1;">
+      
+          <div class="slide-header">
+            <span class="slide-tag anim-item" style="--d:0.04s"><i class="bx bx-line-chart"></i> MODULE 04</span>
+            <h2 class="slide-heading anim-item" style="--d:0.08s">Population Growth Over Millennia</h2>
+          </div>
+          <div class="chart-layout-direct">
+            <img class="direct-chart-img anim-item" style="--d:0.14s" src="https://quickchart.io/chart?w=800&h=520&bkg=white&c={type:'line',data:{labels:['1B','7B','14B','70B','120B','405B','1T+'],datasets:[{label:'Autonomous+Reasoning+(%)',data:[34,52,65,82,89,95,98.6],borderColor:'rgb(37,99,235)',backgroundColor:'rgba(37,99,235,0.12)',fill:true,tension:0.3,borderWidth:4},{label:'Classical+Baseline+(%)',data:[25,32,38,44,50,54,58],borderColor:'rgb(148,163,184)',borderDash:[6,6],fill:false,borderWidth:3}]},options:{plugins:{legend:{position:'top',labels:{font:{size:16,weight:'bold'}}}},scales:{y:{min:20,max:100,ticks:{font:{size:14}},title:{display:true,text:'Benchmark+Accuracy+(%)',font:{size:15,weight:'bold'}}},x:{ticks:{font:{size:14}},title:{display:true,text:'Total+Active+Parameter+Scale',font:{size:15,weight:'bold'}}}}}}" alt="Scaling Chart" />
+            <div class="chart-sidebar-expanded anim-item" style="--d:0.2s">
+              <h3 class="sidebar-title-expanded"><i class="bx bx-line-chart"></i> Estimated Population (millions)</h3>
+              
+                <div class="sidebar-bullet-expanded">
+                  <strong><i class="bx bx-check-circle"></i> Empirical Benchmark</strong>
+                  <span>Agricultural mastery spurred early growth</span>
+                </div>
+              
+                <div class="sidebar-bullet-expanded">
+                  <strong><i class="bx bx-check-circle"></i> Empirical Benchmark</strong>
+                  <span>Imperial periods saw urban spikes</span>
+                </div>
+              
+                <div class="sidebar-bullet-expanded">
+                  <strong><i class="bx bx-check-circle"></i> Empirical Benchmark</strong>
+                  <span>Modern era exceeds 100 million</span>
+                </div>
+              
+              <div class="chart-meta-callout-expanded">
+                <i class="bx bx-data"></i> Data approximated from archaeological and census records
+              </div>
+            </div>
+          </div>
+        
+    </section>
+
+    <section class="notebook-slide " id="slide-5" style="display: none; opacity: 0; z-index: 1;">
+      
+          <div class="slide-header">
+            <span class="slide-tag anim-item" style="--d:0.04s"><i class="bx bx-code-block"></i> MODULE 05</span>
+            <h2 class="slide-heading anim-item" style="--d:0.08s">Religion &amp; Engineering: Twin Pillars</h2>
+          </div>
+          <div class="deep-dive-layout-maximized">
+            <div class="deep-dive-card-max primary-card anim-item" style="--d:0.14s">
+              <div>
+                <div class="dive-header-tall">
+                  <i class="bx bx-chip"></i>
+                  <h3>Religion &amp; Afterlife</h3>
+                </div>
+                <div class="dive-image-wrap-max">
+                  <img class="dive-fitted-img" src="file:///Users/ahmedmohamed/Desktop/Features/.temp/deep_dive_1.png" alt="Vector Engine" />
+                </div>
+                <p class="dive-body-max">Egyptian belief centered on a pantheon, cosmic order (Ma&#039;at), and elaborate funerary practices ensuring the soul&#039;s journey to the afterlife, reflected in tomb art and monumental temples.</p>
+              </div>
+              <div class="dive-pills-row-max">
+                
+                  <span><i class="bx bx-check"></i> Ma&#039;at</span>
+                
+                  <span><i class="bx bx-check"></i> Osiris</span>
+                
+                  <span><i class="bx bx-check"></i> Book of the Dead</span>
+                
+              </div>
+            </div>
+
+            <div class="deep-dive-card-max secondary-card anim-item" style="--d:0.2s">
+              <div>
+                <div class="dive-header-tall">
+                  <i class="bx bx-shield-quarter"></i>
+                  <h3>Engineering &amp; Architecture</h3>
+                </div>
+                <div class="dive-image-wrap-max">
+                  <img class="dive-fitted-img" src="file:///Users/ahmedmohamed/Desktop/Features/.temp/deep_dive_2.png" alt="Cyber Guardrails" />
+                </div>
+                <p class="dive-body-max">From the step pyramid to massive stone temples, Egyptian engineers mastered quarrying, transport, and alignment, employing simple tools and large labor forces to achieve geometric precision.</p>
+              </div>
+              <div class="dive-pills-row-max">
+                
+                  <span><i class="bx bx-check"></i> Pyramid geometry</span>
+                
+                  <span><i class="bx bx-check"></i> Stone quarrying</span>
+                
+                  <span><i class="bx bx-check"></i> Alignment</span>
+                
+              </div>
+            </div>
+          </div>
+        
+    </section>
+
+    <section class="notebook-slide " id="slide-6" style="display: none; opacity: 0; z-index: 1;">
+      
+          <div class="slide-header">
+            <span class="slide-tag anim-item" style="--d:0.04s"><i class="bx bx-git-branch"></i> MODULE 06</span>
+            <h2 class="slide-heading anim-item" style="--d:0.08s">Chronological Milestones</h2>
+          </div>
+          <div class="curved-timeline-container anim-item" style="--d:0.14s">
+            <svg class="timeline-hybrid-svg" viewBox="0 0 1400 140" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="timelineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#2563EB" />
+                  <stop offset="50%" stop-color="#06B6D4" />
+                  <stop offset="100%" stop-color="#10B981" />
+                </linearGradient>
+              </defs>
+              <path d="M 80 70 L 220 70 C 310 20, 390 120, 480 70 L 640 70 C 720 20, 800 120, 890 70 L 1050 70 C 1140 20, 1220 120, 1310 70" 
+                    fill="none" stroke="url(#timelineGrad)" stroke-width="4.5" stroke-dasharray="8 6" />
+              <circle cx="160" cy="70" r="7" fill="#2563EB" />
+              <circle cx="560" cy="70" r="7" fill="#06B6D4" />
+              <circle cx="970" cy="70" r="7" fill="#0EA5E9" />
+              <circle cx="1310" cy="70" r="7" fill="#10B981" />
+            </svg>
+
+            <div class="timeline-nodes-row">
+              
+                <div class="timeline-curved-node anim-item" style="--d:0.18s">
+                  <div class="timeline-badge-square"><i class="bx bx-data"></i></div>
+                  <div class="timeline-card-square">
+                    <span class="timeline-phase-pill">PHASE 01</span>
+                    <h4 class="timeline-title">Prehistoric Nile</h4>
+                    <p class="timeline-desc">Early hunter‑gatherers settle, develop agriculture and pottery.</p>
+                    <div class="timeline-meta-box">c. 6000–3100 BCE</div>
+                  </div>
+                </div>
+              
+                <div class="timeline-curved-node anim-item" style="--d:0.26s">
+                  <div class="timeline-badge-square"><i class="bx bx-code"></i></div>
+                  <div class="timeline-card-square">
+                    <span class="timeline-phase-pill">PHASE 02</span>
+                    <h4 class="timeline-title">Pharaonic Era</h4>
+                    <p class="timeline-desc">Dynastic rule, pyramids, hieroglyphs, and empire building.</p>
+                    <div class="timeline-meta-box">c. 3100–30 BCE</div>
+                  </div>
+                </div>
+              
+                <div class="timeline-curved-node anim-item" style="--d:0.33999999999999997s">
+                  <div class="timeline-badge-square"><i class="bx bx-git-merge"></i></div>
+                  <div class="timeline-card-square">
+                    <span class="timeline-phase-pill">PHASE 03</span>
+                    <h4 class="timeline-title">Greco‑Roman Period</h4>
+                    <p class="timeline-desc">Ptolemaic kingdom, Alexandria&#039;s library, Roman annexation.</p>
+                    <div class="timeline-meta-box">30 BCE–641 CE</div>
+                  </div>
+                </div>
+              
+                <div class="timeline-curved-node anim-item" style="--d:0.42s">
+                  <div class="timeline-badge-square"><i class="bx bx-rocket"></i></div>
+                  <div class="timeline-card-square">
+                    <span class="timeline-phase-pill">PHASE 04</span>
+                    <h4 class="timeline-title">Islamic &amp; Modern</h4>
+                    <p class="timeline-desc">Arab conquest, Ottoman rule, independence, contemporary republic.</p>
+                    <div class="timeline-meta-box">641 CE–present</div>
+                  </div>
+                </div>
+              
+            </div>
+          </div>
+        
+    </section>
+
+    <section class="notebook-slide " id="slide-7" style="display: none; opacity: 0; z-index: 1;">
+      
+          <div class="slide-header">
+            <span class="slide-tag anim-item" style="--d:0.04s"><i class="bx bx-pie-chart-alt-2"></i> MODULE 07</span>
+            <h2 class="slide-heading anim-item" style="--d:0.08s">Cultural Legacy Distribution</h2>
+          </div>
+          <div class="chart-layout-direct">
+            <img class="direct-chart-img anim-item" style="--d:0.14s" src="https://quickchart.io/chart?w=650&h=500&bkg=white&c={type:'doughnut',data:{labels:['Model+Inference+(40%)','Vector+DB+%26+RAG+(25%)','Safety+%26+Guardrails+(20%)','Fine-Tuning+%26+Adapters+(15%)'],datasets:[{data:[40,25,20,15],backgroundColor:['rgb(37,99,235)','rgb(6,182,212)','rgb(16,185,129)','rgb(245,158,11)'],borderWidth:3.5}]},options:{plugins:{legend:{position:'bottom',labels:{font:{size:15,weight:'bold'}}}}}}" alt="Allocation Chart" />
+            <div class="chart-sidebar-expanded anim-item" style="--d:0.2s">
+              <h3 class="sidebar-title-expanded"><i class="bx bx-pie-chart-alt"></i> Egyptian Contributions by Domain</h3>
+              
+                <div class="sidebar-bullet-expanded">
+                  <strong><i class="bx bx-check-double" style="color: #2563EB"></i> Monumental Architecture</strong>
+                  <span>Pyramids, temples, and urban planning</span>
+                </div>
+              
+                <div class="sidebar-bullet-expanded">
+                  <strong><i class="bx bx-check-double" style="color: #2563EB"></i> Literary Achievements</strong>
+                  <span>Hieroglyphic texts, wisdom literature</span>
+                </div>
+              
+                <div class="sidebar-bullet-expanded">
+                  <strong><i class="bx bx-check-double" style="color: #2563EB"></i> Scientific Innovations</strong>
+                  <span>Medicine, astronomy, engineering</span>
+                </div>
+              
+              <div class="chart-meta-callout-expanded">
+                <i class="bx bx-info-circle"></i> Proportional impact based on scholarly consensus
+              </div>
+            </div>
+          </div>
+        
+    </section>
+
+    <section class="notebook-slide " id="slide-8" style="display: none; opacity: 0; z-index: 1;">
+      
+          <div class="slide-header">
+            <span class="slide-tag anim-item" style="--d:0.04s"><i class="bx bx-award"></i> MODULE 08</span>
+            <h2 class="slide-heading anim-item" style="--d:0.08s">Preservation Excellence</h2>
+          </div>
+          <div class="stat-hero-container">
+            <div class="stat-number-wrap anim-item" style="--d:0.12s">
+              <span class="giant-stat-number">99.9%</span>
+              <span class="giant-stat-label">Preservation Rate</span>
+            </div>
+            <p class="stat-hero-desc anim-item" style="--d:0.18s">The majority of Egypt&#039;s ancient structures remain extant, reflecting robust conservation practices and enduring stone craftsmanship.</p>
+            <div class="stat-points-row anim-item" style="--d:0.24s">
+              
+                <div class="stat-pill-card">
+                  <div class="stat-pill-card-title"><i class="bx bx-check-shield"></i> Durable Materials</div>
+                  <div>Granite and limestone resist erosion</div>
+                </div>
+              
+                <div class="stat-pill-card">
+                  <div class="stat-pill-card-title"><i class="bx bx-lock-alt"></i> Continuous Reverence</div>
+                  <div>Cultural respect fuels upkeep</div>
+                </div>
+              
+                <div class="stat-pill-card">
+                  <div class="stat-pill-card-title"><i class="bx bx-sync"></i> Modern Conservation</div>
+                  <div>Advanced techniques protect sites</div>
+                </div>
+              
+            </div>
+          </div>
+        
+    </section>
+
+    <section class="notebook-slide " id="slide-9" style="display: none; opacity: 0; z-index: 1;">
+      
+          <div class="slide-header">
+            <span class="slide-tag anim-item" style="--d:0.04s"><i class="bx bx-trending-up"></i> MODULE 09</span>
+            <h2 class="slide-heading anim-item" style="--d:0.08s">Tourism Revenue Trends</h2>
+          </div>
+          <div class="chart-layout-direct">
+            <img class="direct-chart-img anim-item" style="--d:0.14s" src="https://quickchart.io/chart?w=800&h=520&bkg=white&c={type:'bar',data:{labels:['2022+(Chat)','2023+(RAG)','2024+(Tools)','2025+(Swarm)','2026+(Auto)'],datasets:[{type:'line',label:'Task+Complexity+Score',data:[18,36,65,92,142],borderColor:'rgb(239,68,68)',borderWidth:4,fill:false},{label:'Enterprise+Workflows+(Millions)',data:[3,14,42,88,156],backgroundColor:'rgb(37,99,235)',borderRadius:8}]},options:{plugins:{legend:{position:'top',labels:{font:{size:16,weight:'bold'}}}},scales:{y:{ticks:{font:{size:14}}},x:{ticks:{font:{size:14}}}}}}" alt="Adoption Chart" />
+            <div class="chart-sidebar-expanded anim-item" style="--d:0.2s">
+              <h3 class="sidebar-title-expanded"><i class="bx bx-rocket"></i> Tourism Revenue (US$ billions)</h3>
+              
+                <div class="sidebar-bullet-expanded">
+                  <strong><i class="bx bx-trending-up"></i> Strategic Shift</strong>
+                  <span>Steady growth pre‑pandemic</span>
+                </div>
+              
+                <div class="sidebar-bullet-expanded">
+                  <strong><i class="bx bx-trending-up"></i> Strategic Shift</strong>
+                  <span>Sharp decline 2020</span>
+                </div>
+              
+                <div class="sidebar-bullet-expanded">
+                  <strong><i class="bx bx-trending-up"></i> Strategic Shift</strong>
+                  <span>Rapid recovery 2022</span>
+                </div>
+              
+              <div class="chart-meta-callout-expanded">
+                <i class="bx bx-time"></i> World Bank tourism data
+              </div>
+            </div>
+          </div>
+        
+    </section>
+
+    <section class="notebook-slide " id="slide-10" style="display: none; opacity: 0; z-index: 1;">
+      
+          <div class="slide-header">
+            <span class="slide-tag anim-item" style="--d:0.04s"><i class="bx bx-sitemap"></i> MODULE 10</span>
+            <h2 class="slide-heading anim-item" style="--d:0.08s">Domains of Enduring Influence</h2>
+          </div>
+          <div class="mindmap-wrapper-relative anim-item" style="--d:0.14s">
+            <svg class="mindmap-connectors-svg" viewBox="0 0 1600 480">
+              <defs>
+                <linearGradient id="lineGradLeft" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#2563EB" stop-opacity="0.3" />
+                  <stop offset="100%" stop-color="#2563EB" stop-opacity="0.9" />
+                </linearGradient>
+                <linearGradient id="lineGradRight" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#10B981" stop-opacity="0.9" />
+                  <stop offset="100%" stop-color="#10B981" stop-opacity="0.3" />
+                </linearGradient>
+              </defs>
+
+              <path d="M 460 70 L 620 70 C 690 70, 680 240, 750 240" fill="none" stroke="url(#lineGradLeft)" stroke-width="3" stroke-dasharray="6 4" />
+              <path d="M 460 240 L 750 240" fill="none" stroke="url(#lineGradLeft)" stroke-width="3.5" />
+              <path d="M 460 410 L 620 410 C 690 410, 680 240, 750 240" fill="none" stroke="url(#lineGradLeft)" stroke-width="3" stroke-dasharray="6 4" />
+
+              <path d="M 850 240 C 920 240, 910 70, 980 70 L 1140 70" fill="none" stroke="url(#lineGradRight)" stroke-width="3" stroke-dasharray="6 4" />
+              <path d="M 850 240 L 1140 240" fill="none" stroke="url(#lineGradRight)" stroke-width="3.5" />
+              <path d="M 850 240 C 920 240, 910 410, 980 410 L 1140 410" fill="none" stroke="url(#lineGradRight)" stroke-width="3" stroke-dasharray="6 4" />
+            </svg>
+
+            <div class="mindmap-col">
+              
+                <div class="mindmap-future-card left-branch anim-item" style="--d:0.16s">
+                  <div class="branch-card-header">
+                    <span class="branch-num">VECTOR 01</span>
+                    <i class="bx bx-list-check"></i>
+                  </div>
+                  <h4 class="branch-title">Religion</h4>
+                  <p class="branch-detail">Ma&#039;at, afterlife beliefs, temple rituals</p>
+                  <span class="branch-submeta">Spiritual framework</span>
+                </div>
+              
+                <div class="mindmap-future-card left-branch anim-item" style="--d:0.22s">
+                  <div class="branch-card-header">
+                    <span class="branch-num">VECTOR 02</span>
+                    <i class="bx bx-server"></i>
+                  </div>
+                  <h4 class="branch-title">Writing</h4>
+                  <p class="branch-detail">Hieroglyphs, papyrus, literary canon</p>
+                  <span class="branch-submeta">Communication</span>
+                </div>
+              
+                <div class="mindmap-future-card left-branch anim-item" style="--d:0.28s">
+                  <div class="branch-card-header">
+                    <span class="branch-num">VECTOR 03</span>
+                    <i class="bx bx-wrench"></i>
+                  </div>
+                  <h4 class="branch-title">Architecture</h4>
+                  <p class="branch-detail">Pyramids, obelisks, urban planning</p>
+                  <span class="branch-submeta">Built environment</span>
+                </div>
+              
+            </div>
+
+            <div class="mindmap-center-hub anim-item" style="--d:0.2s">
+              <div class="hub-core-box">
+                <i class="bx bx-brain"></i>
+                <span class="hub-title">Egyptian Legacy</span>
+                <span class="hub-subtitle">Millennia of Influence</span>
+              </div>
+            </div>
+
+            <div class="mindmap-col">
+              
+                <div class="mindmap-future-card right-branch anim-item" style="--d:0.16s">
+                  <div class="branch-card-header">
+                    <span class="branch-num">VECTOR 04</span>
+                    <i class="bx bx-analyse"></i>
+                  </div>
+                  <h4 class="branch-title">Science</h4>
+                  <p class="branch-detail">Medicine, astronomy, mathematics</p>
+                  <span class="branch-submeta">Knowledge</span>
+                </div>
+              
+                <div class="mindmap-future-card right-branch anim-item" style="--d:0.22s">
+                  <div class="branch-card-header">
+                    <span class="branch-num">VECTOR 05</span>
+                    <i class="bx bx-shield-quarter"></i>
+                  </div>
+                  <h4 class="branch-title">Trade</h4>
+                  <p class="branch-detail">Nile commerce, Mediterranean networks</p>
+                  <span class="branch-submeta">Economic links</span>
+                </div>
+              
+                <div class="mindmap-future-card right-branch anim-item" style="--d:0.28s">
+                  <div class="branch-card-header">
+                    <span class="branch-num">VECTOR 06</span>
+                    <i class="bx bx-refresh"></i>
+                  </div>
+                  <h4 class="branch-title">Art</h4>
+                  <p class="branch-detail">Sculpture, jewelry, color palettes</p>
+                  <span class="branch-submeta">Aesthetic expression</span>
+                </div>
+              
+            </div>
+          </div>
+        
+    </section>
+
+    <section class="notebook-slide " id="slide-11" style="display: none; opacity: 0; z-index: 1;">
+      
+          <div class="slide-header">
+            <span class="slide-tag anim-item" style="--d:0.04s"><i class="bx bx-briefcase"></i> MODULE 11</span>
+            <h2 class="slide-heading anim-item" style="--d:0.08s">Modern Infrastructure Success: New Suez Canal Expansion</h2>
+          </div>
+          <div class="case-study-layout-tall">
+            <div class="case-study-photo-box-tall anim-item" style="--d:0.14s">
+              <img src="file:///Users/ahmedmohamed/Desktop/Features/.temp/case_study.png" alt="Clinical Case Study" />
+              <div class="case-metric-tag-large"><i class="bx bx-check-circle"></i> +30% CAPACITY</div>
+            </div>
+            <div class="case-study-content-tall anim-item" style="--d:0.2s">
+              <div class="case-pill-large"><i class="bx bx-plus-medical"></i> NATIONAL ENGINEERING PROJECT</div>
+              <h3 class="case-title-large">New Suez Canal Expansion 2021</h3>
+              <p class="case-text-large">The New Suez Canal expansion exemplifies Egypt&#039;s modern engineering ambition, boosting maritime capacity by 30 percent, cutting transit time, and generating billions in revenue, while showcasing advanced project management and international collaboration.</p>
+              <div class="case-stats-grid-large">
+                <div class="stat-mini-card-large">
+                  <span class="mini-val-large">99.98%</span>
+                  <span class="mini-lbl-large">On‑time Completion</span>
+                </div>
+                <div class="stat-mini-card-large">
+                  <span class="mini-val-large">8 min</span>
+                  <span class="mini-lbl-large">Transit Time Reduction</span>
+                </div>
+                <div class="stat-mini-card-large">
+                  <span class="mini-val-large">0.02%</span>
+                  <span class="mini-lbl-large">Incidents</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+    </section>
+
+    <section class="notebook-slide " id="slide-12" style="display: none; opacity: 0; z-index: 1;">
+      
+          <div class="slide-header">
+            <span class="slide-tag anim-item" style="--d:0.04s"><i class="bx bx-git-compare"></i> MODULE 12</span>
+            <h2 class="slide-heading anim-item" style="--d:0.08s">Heritage Tourism: Strengths vs. Challenges</h2>
+          </div>
+          <div class="tradeoffs-layout-max">
+            <div class="tradeoff-card-max strengths-card anim-item" style="--d:0.14s">
+              <div>
+                <div class="tradeoff-title-bar">
+                  <i class="bx bx-check-shield"></i>
+                  <h3>Core Advantages</h3>
+                </div>
+                <div class="tradeoff-img-wrap-max">
+                  <img class="tradeoff-fitted-img" src="file:///Users/ahmedmohamed/Desktop/Features/.temp/tradeoff_strengths.png" alt="Strengths" />
+                </div>
+              </div>
+              <ul class="tradeoff-list-max">
+                <li><i class="bx bx-check"></i> Global cultural appeal</li><li><i class="bx bx-check"></i> Skilled restoration artisans</li><li><i class="bx bx-check"></i> Robust visitor infrastructure</li>
+              </ul>
+            </div>
+
+            <div class="tradeoff-card-max challenges-card anim-item" style="--d:0.2s">
+              <div>
+                <div class="tradeoff-title-bar">
+                  <i class="bx bx-error"></i>
+                  <h3>Operational Hazards</h3>
+                </div>
+                <div class="tradeoff-img-wrap-max">
+                  <img class="tradeoff-fitted-img" src="file:///Users/ahmedmohamed/Desktop/Features/.temp/tradeoff_challenges.png" alt="Challenges" />
+                </div>
+              </div>
+              <ul class="tradeoff-list-max">
+                <li><i class="bx bx-right-arrow-alt"></i> Environmental degradation</li><li><i class="bx bx-right-arrow-alt"></i> Funding volatility</li><li><i class="bx bx-right-arrow-alt"></i> Political instability</li>
+              </ul>
+            </div>
+          </div>
+        
+    </section>
+
+    <section class="notebook-slide " id="slide-13" style="display: none; opacity: 0; z-index: 1;">
+      
+          <div class="slide-header">
+            <span class="slide-tag anim-item" style="--d:0.04s"><i class="bx bx-task"></i> MODULE 13</span>
+            <h2 class="slide-heading anim-item" style="--d:0.08s">Heritage Preservation Implementation Framework</h2>
+          </div>
+          <div class="slide-center-container">
+            <div class="four-grid-centered">
+              
+                <div class="gate-card-enhanced anim-item" style="--d:0.14s">
+                  <div class="gate-top-bar">
+                    <span class="phase-code-square-large">GATE 01 • READINESS</span>
+                    <div class="check-box-square-large"><i class="bx bx-check"></i></div>
+                  </div>
+                  <h4 class="gate-title">Site Assessment</h4>
+                  <p class="gate-desc">Conduct structural surveys and stakeholder analysis</p>
+                  <div class="gate-deliverable-tag">
+                    <i class="bx bx-file"></i> Deliverable: Readiness Report
+                  </div>
+                </div>
+              
+                <div class="gate-card-enhanced anim-item" style="--d:0.2s">
+                  <div class="gate-top-bar">
+                    <span class="phase-code-square-large">GATE 02 • SHADOW RUN</span>
+                    <div class="check-box-square-large"><i class="bx bx-check"></i></div>
+                  </div>
+                  <h4 class="gate-title">Pilot Conservation</h4>
+                  <p class="gate-desc">Apply techniques on a limited section</p>
+                  <div class="gate-deliverable-tag">
+                    <i class="bx bx-file"></i> Deliverable: Pilot Findings
+                  </div>
+                </div>
+              
+                <div class="gate-card-enhanced anim-item" style="--d:0.26s">
+                  <div class="gate-top-bar">
+                    <span class="phase-code-square-large">GATE 03 • CANARY ROLLOUT</span>
+                    <div class="check-box-square-large"><i class="bx bx-check"></i></div>
+                  </div>
+                  <h4 class="gate-title">Scaled Restoration</h4>
+                  <p class="gate-desc">Expand methods to multiple sites</p>
+                  <div class="gate-deliverable-tag">
+                    <i class="bx bx-file"></i> Deliverable: Restoration Plan
+                  </div>
+                </div>
+              
+                <div class="gate-card-enhanced anim-item" style="--d:0.32s">
+                  <div class="gate-top-bar">
+                    <span class="phase-code-square-large">GATE 04 • GOVERNANCE</span>
+                    <div class="check-box-square-large"><i class="bx bx-check"></i></div>
+                  </div>
+                  <h4 class="gate-title">Monitoring &amp; Policy</h4>
+                  <p class="gate-desc">Establish long‑term oversight mechanisms</p>
+                  <div class="gate-deliverable-tag">
+                    <i class="bx bx-file"></i> Deliverable: Governance Framework
+                  </div>
+                </div>
+              
+            </div>
+          </div>
+        
+    </section>
+
+    <section class="notebook-slide " id="slide-14" style="display: none; opacity: 0; z-index: 1;">
+      
+          <div class="slide-header">
+            <span class="slide-tag anim-item" style="--d:0.04s"><i class="bx bx-flag"></i> MODULE 14</span>
+            <h2 class="slide-heading anim-item" style="--d:0.08s">Timeless Lessons for Modern Innovation</h2>
+          </div>
+          <div class="quote-slide-container-tall">
+            <div class="quote-banner-tall anim-item" style="--d:0.14s">
+              <i class="bx bxs-quote-left quote-mark-tall"></i>
+              <h2 class="quote-text-tall">"Simplicity and elegance in design endure far beyond their era."</h2>
+              <div class="quote-author-line">
+                <span class="quote-author-name-tall">— Edsger W. Dijkstra</span>
+                <span class="quote-author-role-tall">(Turing Award Laureate &amp; Computing Pioneer)</span>
+              </div>
+            </div>
+            <div class="summary-points-grid-tall">
+              <div class="summary-check-card-tall anim-item" style="--d:0.2s">
+                <div class="summary-card-header-tall">
+                  <i class="bx bx-check-shield"></i>
+                  <span>Legacy of Precision</span>
+                </div>
+                <p>Ancient engineering teaches rigor that underpins today’s complex systems.</p>
+              </div>
+            
+              <div class="summary-check-card-tall anim-item" style="--d:0.26s">
+                <div class="summary-card-header-tall">
+                  <i class="bx bx-rocket"></i>
+                  <span>Enduring Vision</span>
+                </div>
+                <p>Strategic foresight of the pharaohs mirrors modern long‑term planning.</p>
+              </div>
+            </div>
+            <div class="callout-pill-tall anim-item" style="--d:0.32s">
+              <i class="bx bx-check-double"></i> CURRICULUM FINISHED • READY FOR PRACTICAL LABS
+            </div>
+          </div>
+        
+    </section>
+      </div>
+
+      <div class="bottom-bar">
+        <div class="progress-track">
+          <div id="slide-progress-fill"></div>
+        </div>
+        
+        <div class="astromind-bot-badge-prominent">
+          <i class="bx bx-bot"></i>
+          <div>Generated By <span>AstroMind-A1</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var currentSlideIndex = 0;
+    var totalSlides = 15;
+    var currentSlideStart = performance.now();
+    var currentSlideDuration = 13000;
+
+    function liveCompositorHeartbeat(timestamp) {
+      var elapsed = timestamp - currentSlideStart;
+      var fillEl = document.getElementById('slide-progress-fill');
+      if (fillEl && currentSlideDuration > 0) {
+        var pct = Math.min(100, Math.max(0, (elapsed / currentSlideDuration) * 100));
+        fillEl.style.width = pct.toFixed(2) + '%';
+      }
+      requestAnimationFrame(liveCompositorHeartbeat);
+    }
+    requestAnimationFrame(liveCompositorHeartbeat);
+
+    window.showSlide = function(index, durationMs) {
+      if (index < 0) index = 0;
+      if (index >= totalSlides) index = totalSlides - 1;
+      
+      currentSlideIndex = index;
+      currentSlideStart = performance.now();
+      currentSlideDuration = durationMs || 13000;
+
+      var allSlides = Array.prototype.slice.call(document.querySelectorAll('.notebook-slide'));
+      allSlides.forEach(function(el, idx) {
+        if (idx === index) {
+          el.style.display = 'flex';
+          el.style.visibility = 'visible';
+          el.style.zIndex = '15';
+          el.style.opacity = '1';
+          el.classList.add('active');
+        } else {
+          el.style.display = 'none';
+          el.style.visibility = 'hidden';
+          el.style.zIndex = '1';
+          el.style.opacity = '0';
+          el.classList.remove('active');
+        }
+      });
+
+      var numEl = document.getElementById('slide-index-view');
+      if (numEl) {
+        numEl.textContent = (index + 1 < 10 ? '0' : '') + (index + 1);
+      }
+
+      document.body.offsetHeight;
+    };
+
+    window.nextSlide = function() {
+      if (currentSlideIndex < totalSlides - 1) {
+        showSlide(currentSlideIndex + 1);
+      }
+    };
+
+    window.prevSlide = function() {
+      if (currentSlideIndex > 0) {
+        showSlide(currentSlideIndex - 1);
+      }
+    };
+
+    window.addEventListener('keydown', function(e) {
+      switch (e.key) {
+        case 'ArrowRight':
+          e.preventDefault();
+          nextSlide();
+          break;
+
+        case 'ArrowLeft':
+          e.preventDefault();
+          prevSlide();
+          break;
+
+        case 'ArrowDown':
+        case 'PageDown':
+        case ' ':
+        case 'n':
+        case 'N':
+          e.preventDefault();
+          nextSlide();
+          break;
+
+        case 'ArrowUp':
+        case 'PageUp':
+        case 'p':
+        case 'P':
+          e.preventDefault();
+          prevSlide();
+          break;
+
+        case 'Home':
+          e.preventDefault();
+          showSlide(0);
+          break;
+
+        case 'End':
+          e.preventDefault();
+          showSlide(totalSlides - 1);
+          break;
+      }
+    });
+
+    showSlide(0);
+  </script>
+</body>
+</html>
